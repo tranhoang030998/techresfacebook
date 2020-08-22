@@ -87,6 +87,7 @@ public class FacebookServiceImpl implements FacebookService {
         conversation.setDateCreated(Instant.now());
         conversation.setNameConversation("Conversation of "+displayName);
         conversation.setClient(client);
+        conversation.setHaveResponsePerson(false);
         val conversationCreated = conversationRepository.save(conversation);
 
         val participant = new Participant();
@@ -138,7 +139,7 @@ public class FacebookServiceImpl implements FacebookService {
 
         twilioClientService.initTwilioServiceInstance();
         // TODO : Find Conversation
-        return conversationRepository.findByClientId(client.getId())
+        return conversationRepository.findByClientId(client.getId())// One Client have one conversation
             .orElse(() -> Try.failure(new Exception("Failure when find conversation")))
             .flatMap(foundConversation -> {
 

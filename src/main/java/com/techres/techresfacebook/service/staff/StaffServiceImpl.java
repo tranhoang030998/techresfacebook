@@ -12,6 +12,7 @@ import com.techres.techresfacebook.service.twilio.TwilioClientService;
 import com.techres.techresfacebook.service.twilio.data.MemberCreateReqDTO;
 import com.techres.techresfacebook.service.twilio.data.UserCreateReqDTO;
 import com.techres.techresfacebook.webrest.payload.StaffJoinConversationReqDTO;
+import com.techres.techresfacebook.webrest.payload.StaffLoginReqDTO;
 import com.techres.techresfacebook.webrest.payload.StaffRegisterReqDTO;
 import io.vavr.control.Try;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,11 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public Try<Boolean> register(StaffRegisterReqDTO dto) {
 
+        //TODO: Check duplicated email when register process
+        if (staffRepository.findStaffByEmail(dto.getEmail()) != null){
+            return Try.failure(new Exception("Email already registered"));
+        }
+
         twilioClientService.initTwilioServiceInstance();
         val user = new User();
         user.setDisplayName(dto.getDisplayName());
@@ -63,6 +69,18 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
+    public Try<Staff> login(StaffLoginReqDTO dto) {
+        Staff staff = staffRepository.findStaffByEmail(dto.getEmail());
+        if (staff == null){
+            return Try.failure(new Exception("Email invalid"));
+        }
+
+        return (
+                staff.getPassword().equals(dto.getPassword())
+            ) ? Try.success(staff) : Try.failure(new Exception("Wrong password, please try again"));
+    }
+
+    @Override
     public Try<Boolean> joinConversation(StaffJoinConversationReqDTO dto) {
         val conversation = conversationRepository.findById(dto.getConversationId());
         val staffUserJoin = staffRepository.findById(dto.getStaffId());
@@ -74,6 +92,9 @@ public class StaffServiceImpl implements StaffService {
         participant.setConversation(conversation.get());
         participant.setUser(staffUserJoin.get().getUser());
         participantRepository.save(participant);
+
+        conversation.get().setHaveResponsePerson(true);
+        conversationRepository.save(conversation.get());
 
         val dataMember = new MemberCreateReqDTO();
         dataMember.setChannelId("CHATBOX_"+conversation.get().getId());

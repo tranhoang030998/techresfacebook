@@ -24,6 +24,8 @@ public class Conversation implements Serializable {
     @ManyToOne
     private Client client;
 
+    private Boolean haveResponsePerson;
+
     public Long getId() {
         return id;
     }
@@ -56,6 +58,14 @@ public class Conversation implements Serializable {
         this.client = client;
     }
 
+    public Boolean getHaveResponsePerson() {
+        return haveResponsePerson;
+    }
+
+    public void setHaveResponsePerson(Boolean haveResponsePerson) {
+        this.haveResponsePerson = haveResponsePerson;
+    }
+
     @Override
     public String toString() {
         return "Conversation{" +
@@ -63,6 +73,7 @@ public class Conversation implements Serializable {
                 ", nameConversation='" + nameConversation + '\'' +
                 ", dateCreated=" + dateCreated +
                 ", client=" + client +
+                ", haveResponsePerson=" + haveResponsePerson +
                 '}';
     }
 }

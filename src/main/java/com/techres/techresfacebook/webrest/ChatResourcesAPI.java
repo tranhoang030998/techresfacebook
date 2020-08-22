@@ -14,7 +14,8 @@ import java.net.URISyntaxException;
 
 @RestController
 @RequestMapping("/api/v1")
-public class ChatResourcesAPI {
+@CrossOrigin("*")
+public class  ChatResourcesAPI {
 
     @Autowired
     private ChatService chatService;

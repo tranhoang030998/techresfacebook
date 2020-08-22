@@ -13,6 +13,7 @@ import java.net.URISyntaxException;
 
 @RestController
 @RequestMapping("/api/v1")
+@CrossOrigin("*")
 public class FacePageResourcesAPI {
 
     @Autowired
