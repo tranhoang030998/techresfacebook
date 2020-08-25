@@ -44,28 +44,12 @@ public abstract class Bot extends BaseBot {
         facebookMessengerProfileUrl = faceBookApiEndPoints.getFacebookMessengerProfileUrl().replace("{PAGE_ACCESS_TOKEN}",getPageAccessToken());
     }
 
-    /**
-     * Class extending this must implement this as it's
-     * required to setup the webhook.
-     *
-     * @return facebook token
-     */
+
     public abstract String getFbToken();
-    /**
-     * Class extending this must implement this as it's
-     * required for Send API.
-     *
-     * @return facebook page access token
-     */
+
     public abstract String getPageAccessToken();
     public abstract void defaultControllerInvoke(Event event) throws Throwable;
 
-    /**
-     * @param mode
-     * @param verifyToken
-     * @param challenge
-     * @return if verify token is valid then 200 OK with challenge in the body or else forbidden error
-     */
     @GetMapping("/WebHook")
     public final ResponseEntity setupWebHookVerification(@RequestParam("hub.mode") String mode,
                                                          @RequestParam("hub.verify_token") String verifyToken,
@@ -77,12 +61,6 @@ public abstract class Bot extends BaseBot {
         }
     }
 
-    /**
-     * Add WebHook endpoint
-     *
-     * @param callback
-     * @return 200 OK response
-     */
     @ResponseBody
     @PostMapping("/WebHook")
     public final ResponseEntity setupWebHookEndpoint(@RequestBody Callback callback) {
@@ -172,42 +150,17 @@ public abstract class Bot extends BaseBot {
         return reply(response);
     }
 
-    /**
-     * Call this method with a {@code payload} to set the "Get Started" button. A user sees this button
-     * when it first starts a conversation with the bot.
-     * <p>
-     * See https://developers.facebook.com/docs/messenger-platform/discovery/welcome-screen for more.
-     *
-     * @param payload for "Get Started" button
-     * @return response from facebook
-     */
+
     protected final ResponseEntity<Response> setGetStartedButton(String payload) {
         Event event = new Event().setGetStarted(new Postback().setPayload(payload));
         return restTemplate.postForEntity(facebookMessengerProfileUrl, event, Response.class);
     }
 
-    /**
-     * Call this method to set the "Greeting Text". A user sees this when it opens up the chat window for the
-     * first time. You can specify different messages for different locales. Therefore, this method receives an
-     * array of {@code greeting}.
-     * <p>
-     * See https://developers.facebook.com/docs/messenger-platform/discovery/welcome-screen for more.
-     *
-     * @param greeting an array of Payload consisting of text and locale
-     * @return response from facebook
-     */
     protected final ResponseEntity<Response> setGreetingText(Payload[] greeting) {
         Event event = new Event().setGreeting(greeting);
         return restTemplate.postForEntity(facebookMessengerProfileUrl, event, Response.class);
     }
 
-    /**
-     * Invoke this method to make the bot subscribe to a page after which
-     * your users can interact with your page or in other words, the bot.
-     * <p>
-     * NOTE: It seems Fb now allows the bot to subscribe to a page via the
-     * ui. See https://developers.facebook.com/docs/messenger-platform/getting-started/app-setup
-     */
     @PostMapping("/subscribe")
     public final void subscribeAppToPage() {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
@@ -215,49 +168,26 @@ public abstract class Bot extends BaseBot {
         restTemplate.postForEntity(faceBookApiEndPoints.getFacebookSubscribeUrl(), params, String.class);
     }
 
-    /**
-     * Call this method to start a conversation.
-     *
-     * @param event received from facebook
-     */
     protected final void startConversation(Event event, String methodName) {
         startConversation(event.getSender().getId(), methodName);
     }
 
-    /**
-     * Call this method to jump to the next method in a conversation.
-     *
-     * @param event received from facebook
-     */
+
     protected final void nextConversation(Event event) {
         nextConversation(event.getSender().getId());
     }
 
-    /**
-     * Call this method to stop the end the conversation.
-     *
-     * @param event received from facebook
-     */
+
     protected final void stopConversation(Event event) {
         stopConversation(event.getSender().getId());
     }
 
-    /**
-     * Check whether a conversation is up in a particular slack channel.
-     *
-     * @param event received from facebook
-     * @return true if a conversation is on, false otherwise.
-     */
+
     protected final boolean isConversationOn(Event event) {
         return isConversationOn(event.getSender().getId());
     }
 
-    /**
-     * Invoke the methods with matching {@link Controller#events()}
-     * and {@link Controller#pattern()} in events received from Slack/Facebook.
-     *
-     * @param event received from facebook
-     */
+
     private void invokeMethods(Event event) {
         boolean isInvoked = false;
         try {
@@ -295,11 +225,7 @@ public abstract class Bot extends BaseBot {
         }
     }
 
-    /**
-     * Invoke the appropriate method in a conversation.
-     *
-     * @param event received from facebook
-     */
+
     private void invokeChainedMethod(Event event) {
         Queue<MethodWrapper> queue = conversationQueueMap.get(event.getSender().getId());
 
@@ -320,12 +246,7 @@ public abstract class Bot extends BaseBot {
         }
     }
 
-    /**
-     * Match the pattern with different attributes based on the event type.
-     *
-     * @param event received from facebook
-     * @return the pattern string
-     */
+
     private String getPatternFromEventType(Event event) {
         switch (event.getType()) {
             case MESSAGE:

@@ -8,10 +8,6 @@ import lombok.NoArgsConstructor;
 
 import java.util.Arrays;
 
-/**
- * @author duy hoang
- * @version 05/08/2020
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
