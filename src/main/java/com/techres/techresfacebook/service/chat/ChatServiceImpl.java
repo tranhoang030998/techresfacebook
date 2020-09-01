@@ -20,6 +20,7 @@ import java.util.List;
 @Service
 public class ChatServiceImpl implements ChatService {
 
+    // Spring Data JPA
     @Autowired
     private ChatRepository chatRepository;
     @Autowired

@@ -129,7 +129,7 @@ public class FacebookServiceImpl implements FacebookService {
             .setMessage(message)
             .setMessagingType("UPDATE")
             .setType(EventType.MESSAGE);
-
+        // https://graph.facebook.com/v4.0/me/messages?access_token={PAGE_ACCESS_TOKEN}
         restTemplate.postForEntity(faceBookApiEndPoints.getFacebookSendUrl(), event, Response.class, fbPageAccessToken);
         return true;
     }

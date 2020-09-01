@@ -51,10 +51,10 @@ public class FacebookBot extends Bot {
             // TODO: First time client come system
             val userFacebook = facebookService.getUser(facebookId);
             facebookService.registerClientToSystem(facebookId,userFacebook.getFirstName() + " " + userFacebook.getLastName());
-            reply(event, new Message().setText("(❀◕ ‿ ◕❀) Bạn Đã Connect Với FanPage Thành Công. Hãy tiếp tục trò chuyện để chúng tôi thấu hiểu nhu cầu của bạn hơn!  \uD83D\uDE07"));
+            reply(event, new Message().setText("Bạn Đã Connect Với FanPage Thành Công. Hãy tiếp tục trò chuyện để chúng tôi thấu hiểu nhu cầu của bạn hơn!  \uD83D\uDE07"));
         } else {
             System.out.println("USER ALREADY EXISTING");
-            reply(event, new Message().setText("(❀◕ ‿ ◕❀) Chờ chút nhé!!  \uD83D\uDE07"));
+            reply(event, new Message().setText("Chờ chút nhé!!  \uD83D\uDE07"));
         }
     }
 
